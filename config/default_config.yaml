@@ -1,0 +1,48 @@
+# Google Flow Auto Configuration
+
+# Google Flow settings
+flow:
+  url: "https://flow.google.com"
+  generation_timeout: 300
+  download_timeout: 120
+  polling_interval: 2.0
+  delay_between_operations: 3.0
+  max_retries: 3
+
+# Browser automation settings
+browser:
+  headless: false
+  user_data_dir: "browser_profile"
+  channel: "chrome" # "chrome", "msedge", or null for bundled chromium
+  cdp_endpoint: null # e.g. "http://127.0.0.1:9222" if connecting to an existing browser
+
+# Media and FFmpeg settings
+ffmpeg:
+  ffmpeg_path: "ffmpeg"
+  ffprobe_path: "ffprobe"
+  force_reencode: false
+  video_codec: "libx264"
+  audio_codec: "aac"
+  crf: 18
+  preset: "medium"
+
+# Storage paths
+paths:
+  output_dir: "output"
+  data_dir: "data"
+  logs_dir: "logs"
+  db_file: "data/google_flow_auto.db"
+  log_file: "logs/google_flow_auto.log"
+
+# Server and UI settings
+server:
+  host: "127.0.0.1"
+  port: 8080
+  lan_access: false
+
+# Workflow settings
+workflow:
+  scenes_per_video: 6
+  target_videos: 10
+  target_prompts: 60
+  test_mode: false # If true, uses mock Flow generator for testing
