@@ -4,7 +4,26 @@ A local, resilient automation utility for bulk video generation on [Google Flow]
 
 ---
 
-## 📖 What It Does
+## 📑 Table of Contents
+
+- [Overview & Workflow](#-overview--workflow)
+- [Android vs Desktop Real-Flow Feasibility Report](#-android-vs-desktop-real-flow-feasibility-report)
+- [Architecture](#-architecture)
+- [Key Features](#-key-features)
+- [System Requirements](#-system-requirements)
+- [Installation](#-installation)
+- [Prompt Preparation](#-prompt-preparation)
+- [Running the Application](#-running-the-application)
+- [Google Flow Authentication Workflow](#-google-flow-authentication-workflow)
+- [Output Directory Structure](#-output-directory-structure)
+- [Checkpoint & Crash Recovery](#-checkpoint--crash-recovery)
+- [Testing](#-testing)
+- [Limitations & Disclaimers](#-limitations--disclaimers)
+- [License](#-license)
+
+---
+
+## 📖 Overview & Workflow
 
 Google Flow Auto automates the full pipeline from raw text prompts to finished, multi-scene merged videos:
 
@@ -34,22 +53,94 @@ Google Flow Auto automates the full pipeline from raw text prompts to finished, 
 
 ---
 
+## 🔍 Android vs Desktop Real-Flow Feasibility Report
+
+An empirical technical investigation was conducted directly inside an Android phone running UserLAnd Debian (aarch64) to evaluate whether **REAL** Google Flow generations can run without a Windows PC:
+
+```text
+ANDROID REAL-FLOW FEASIBILITY MATRIX
+─────────────────────────────────────────────────────────────────────────────
+Flow accessible from Android:        YES  (HTTP 200, landing DOM rendered)
+Browser automation possible:         YES  (Playwright Chromium v153 ARM64)
+Real prompt submission:              NO   (Hard blocker: Google auth in headless PRoot)
+Real generation detection:           NO   (Gated behind authentication)
+Real video download:                 YES  (Stream fetch & download interceptors work)
+FFmpeg processing:                   YES  (FFmpeg 7.1.5 verified on ARM64)
+Complete 60-prompt workflow:         NO   (Cannot run headless end-to-end on phone)
+─────────────────────────────────────────────────────────────────────────────
+```
+
+### Technical Evidence & Findings
+
+1. **Chromium in UserLAnd Debian (`YES`):**
+   - Playwright Chromium (ARM64) was installed and executed with flags: `--no-sandbox`, `--disable-setuid-sandbox`, `--disable-dev-shm-usage`, and `--disable-gpu`.
+   - Successfully navigated to `https://flow.google.com` and loaded the full 560 KB studio landing DOM.
+
+2. **The Authentication Blocker (`NO`):**
+   - Google Flow requires an active Google account with AI Labs / Flow entitlements (`accounts.google.com/ServiceLogin`).
+   - In a terminal UserLAnd session (`DISPLAY=''`), Chromium must run **headless**.
+   - In headless mode, the user cannot see a browser window to manually enter credentials and approve 2-factor authentication.
+   - Google's BotGuard/reCAPTCHA enterprise actively detects and blocks sign-in from automated headless browsers (*"Couldn't sign you in. This browser or app may not be secure"*).
+   - In accordance with the security policy, Google Flow Auto **never** bypasses authentication, harvests passwords, or circumvents CAPTCHAs.
+
+3. **FFmpeg & Queue Performance on Android (`YES`):**
+   - FFmpeg 7.1.5, SQLite WAL database, prompt parsing, crash recovery, and the Web UI run natively and flawlessly on Android.
+
+### Recommended Dual-Device Strategy
+
+| Environment | Primary Function | Features |
+|---|---|---|
+| **Windows / Desktop PC** | **Production Flow Runner** | Real desktop Chrome, persistent manual login profile (`browser_profile/`), real Veo generations, 48s FFmpeg merges. |
+| **Android / UserLAnd** | **Control & Development** | CLI monitoring, SQLite queue management, LAN Web UI remote monitoring (`--lan`), mock pipeline testing (`--mock`). |
+
+---
+
+## 🏗️ Architecture
+
+```text
+                 ┌────────────────────────────────┐
+                 │   Responsive Local Web UI      │
+                 │   (Mobile 375px + Desktop)     │
+                 └───────────────┬────────────────┘
+                                 │ HTTP / WebSocket
+                                 ▼
+                 ┌────────────────────────────────┐
+                 │   Automation Controller        │
+                 │   (State Machine & Recovery)   │
+                 └───────────────┬────────────────┘
+                                 │
+              ┌──────────────────┼──────────────────┐
+              ▼                  ▼                  ▼
+      ┌───────────────┐  ┌───────────────┐  ┌───────────────┐
+      │ Queue Manager │  │ Flow Bot Driver│ │ FFmpeg Merger │
+      │  & Validator  │  │ (Playwright)  │  │(Stream Copy / │
+      └───────┬───────┘  └───────┬───────┘  │  Re-encode)   │
+              │                  │          └───────┬───────┘
+              ▼                  ▼                  ▼
+      ┌───────────────┐  ┌───────────────┐  ┌───────────────┐
+      │ SQLite Store  │  │ Google Flow   │  │ Merged Videos │
+      │ (WAL Journal) │  │ Canvas / Veo  │  │(Video_01.mp4) │
+      └───────────────┘  └───────────────┘  └───────────────┘
+```
+
+---
+
 ## 🚀 Key Features
 
-- **Isolated Flow Automation:** All browser selectors and interaction rules are strictly isolated in `app/flow/selectors.py`.
-- **Intelligent Polling:** No fixed-time sleeps. Monitors actual DOM state, generation spinners, and media readiness with configurable timeout safeguards.
-- **SQLite Checkpoint & Crash Recovery:** Atomic transaction logging prevents re-generating already completed scenes. If interrupted or crashed, restarts from the first incomplete scene.
-- **FFmpeg Stream Copy & Re-encode Fallback:** Probes media streams with `ffprobe`. Uses ultra-fast stream copy concatenation when compatible, falling back to clean H.264/AAC re-encoding if streams differ.
-- **Responsive Web UI:** Modern, touch-friendly dark UI optimized for mobile phones (320px–412px) and desktop screens (1366px+).
+- **Isolated Flow Automation:** All browser selectors and interaction rules are isolated in `app/flow/selectors.py` for easy updates if Google modifies the UI.
+- **Intelligent Polling:** No fixed-time sleeps. Continuously monitors DOM state, spinner elements, and media readiness with configurable timeout safeguards.
+- **SQLite Checkpoint & Crash Recovery:** Atomic transactions prevent re-generating already completed scenes. If interrupted or crashed, restarting safely resumes from the first incomplete scene.
+- **FFmpeg Stream Copy & Re-encode Fallback:** Probes media streams with `ffprobe`. Uses ultra-fast stream copy concatenation when compatible, falling back to clean H.264/AAC re-encoding if technical parameters differ.
+- **Responsive Web UI:** Modern dark-theme UI optimized for mobile phones (320px–412px) and desktop screens (1366px+).
 - **Full CLI:** Complete headless terminal controls (`start`, `status`, `pause`, `resume`, `retry`, `serve`).
-- **Test Mode / Mock Engine:** Built-in synthetic clip generator (`--mock`) for testing full pipelines on headless environments like Android/UserLAnd, Linux terminals, or CI/CD pipelines without launching Chrome.
+- **Test Mode / Mock Engine:** Built-in synthetic clip generator (`--mock`) for testing full pipelines on headless environments like Android/UserLAnd or CI/CD pipelines without launching Chrome.
 - **Zero Credential Theft:** Does **not** store Google passwords or bypass CAPTCHAs. Uses persistent browser profiles where the user logs in manually once.
 
 ---
 
 ## 📋 System Requirements
 
-- **Operating System:** Windows 10/11 (recommended for desktop Chrome automation), Linux (Debian/Ubuntu/Arch), macOS, or Android (via UserLAnd Debian for CLI/monitoring).
+- **Operating System:** Windows 10/11 (recommended for real desktop Chrome automation), Linux (Debian/Ubuntu/Arch), macOS, or Android (via UserLAnd Debian for CLI/monitoring).
 - **Python:** 3.10, 3.11, 3.12, or 3.13.
 - **FFmpeg & FFprobe:** Installed and available on system `$PATH`.
 - **Browser:** Google Chrome or Chromium (managed via Playwright).
@@ -204,7 +295,7 @@ output/
 │   ├── scene_04.mp4
 │   ├── scene_05.mp4
 │   ├── scene_06.mp4
-│   └── Video_01.mp4    ◄── Final 48-second merged video
+│   └── Video_01.mp4    ◄── Final ~48-second merged video
 ├── Video_02/
 │   ├── scene_01.mp4
 │   ...
@@ -247,7 +338,7 @@ Tests include:
 
 ## ⚠️ Limitations & Disclaimers
 
-- **UI Dependency:** This tool uses browser automation to interact with the web interface of Google Flow. If Google alters its web DOM or user interface, update selectors in [`app/flow/selectors.py`](file:///app/flow/selectors.py).
+- **UI Dependency:** This tool uses browser automation to interact with the web interface of Google Flow. If Google alters its web DOM or user interface, update selectors in [`app/flow/selectors.py`](app/flow/selectors.py).
 - **Unofficial Utility:** This project is an independent open-source automation utility and is not affiliated with, endorsed by, or sponsored by Google.
 
 ---
