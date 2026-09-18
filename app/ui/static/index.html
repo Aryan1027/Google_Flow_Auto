@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Google Flow Auto</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="brand">
+        <span class="logo-icon">⚡</span>
+        <h1>Google Flow Auto</h1>
+      </div>
+      <div class="header-badges">
+        <span id="app-state-badge" class="badge state-idle">IDLE</span>
+        <button id="btn-open-prompts" class="btn btn-secondary btn-sm">Prompts Queue</button>
+      </div>
+    </header>
+
+    <!-- Error / Notification Banner -->
+    <div id="alert-banner" class="alert-banner hidden">
+      <span id="alert-message"></span>
+      <button id="alert-dismiss" class="btn-dismiss">&times;</button>
+    </div>
+
+    <!-- Overall Progress Section -->
+    <section class="card progress-card">
+      <div class="card-header">
+        <h2>Overall Progress</h2>
+        <span id="progress-counts" class="metric">0 / 60 scenes completed</span>
+      </div>
+      <div class="progress-bar-container">
+        <div id="overall-progress-bar" class="progress-bar-fill" style="width: 0%"></div>
+      </div>
+      <div class="stats-row">
+        <div class="stat-box">
+          <span class="stat-label">Total Prompts</span>
+          <span id="stat-total" class="stat-val">0</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-label">Completed</span>
+          <span id="stat-completed" class="stat-val text-success">0</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-label">Remaining</span>
+          <span id="stat-remaining" class="stat-val text-warning">0</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-label">Failed</span>
+          <span id="stat-failed" class="stat-val text-danger">0</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Controls Row (Touch Friendly) -->
+    <section class="controls-section">
+      <button id="btn-start" class="btn btn-action btn-start">▶ START</button>
+      <button id="btn-pause" class="btn btn-action btn-pause">⏸ PAUSE</button>
+      <button id="btn-resume" class="btn btn-action btn-resume">⏯ RESUME</button>
+      <button id="btn-stop" class="btn btn-action btn-stop">⏹ STOP</button>
+    </section>
+
+    <!-- Current Scene Status -->
+    <section class="card current-card">
+      <div class="card-header">
+        <h2>Current Operation</h2>
+        <span id="current-status-tag" class="tag tag-waiting">Waiting</span>
+      </div>
+      <div class="current-body">
+        <div class="current-meta">
+          <div class="meta-item">
+            <span class="label">Video</span>
+            <span id="current-video" class="value">—</span>
+          </div>
+          <div class="meta-item">
+            <span class="label">Scene</span>
+            <span id="current-scene" class="value">—</span>
+          </div>
+          <div class="meta-item">
+            <span class="label">Retries</span>
+            <span id="current-retries" class="value">0</span>
+          </div>
+        </div>
+        <div class="current-prompt-box">
+          <span class="label">Prompt:</span>
+          <p id="current-prompt-text" class="prompt-text">No scene currently in progress.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Video Batches Overview -->
+    <section class="card videos-card">
+      <div class="card-header">
+        <h2>Videos &amp; Scenes</h2>
+        <span class="subtext">10 Videos &bull; 6 Scenes each</span>
+      </div>
+      <div id="video-groups-list" class="video-groups-list">
+        <!-- Rendered dynamically -->
+        <p class="empty-hint">No queue loaded. Click 'Prompts Queue' to load prompts.</p>
+      </div>
+    </section>
+
+    <!-- Live Event Log -->
+    <section class="card log-card">
+      <div class="card-header">
+        <h2>Activity Log</h2>
+        <button id="btn-clear-logs" class="btn btn-sm btn-ghost">Clear</button>
+      </div>
+      <div id="log-console" class="log-console">
+        <div class="log-line text-muted">[System] Ready. Connect via Web UI or CLI.</div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Prompts Input Modal -->
+  <div id="prompts-modal" class="modal-backdrop hidden">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3>Queue Prompts (60 Scenes / 10 Videos)</h3>
+        <button id="modal-close" class="btn-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-desc">
+          Paste 60 prompts separated by blank lines, or use <code>VIDEO 01</code> headers. Every 6 prompts are merged into one 48-second video.
+        </p>
+        <textarea id="prompts-textarea" placeholder="Prompt 1&#10;&#10;Prompt 2&#10;&#10;Prompt 3..."></textarea>
+        <div class="validation-bar">
+          <span id="validation-counter" class="valid-tag">Prompts: 0</span>
+          <span id="validation-hint" class="hint-text">60 prompts required for 10 complete videos.</span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="btn-load-sample" class="btn btn-secondary">Load 60 Samples</button>
+        <button id="btn-save-prompts" class="btn btn-primary">Save to Queue</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Video Preview Modal -->
+  <div id="video-modal" class="modal-backdrop hidden">
+    <div class="modal-dialog modal-video">
+      <div class="modal-header">
+        <h3 id="video-modal-title">Video Preview</h3>
+        <button id="video-modal-close" class="btn-close">&times;</button>
+      </div>
+      <div class="modal-body text-center">
+        <video id="preview-player" controls autoplay playsinline style="max-width: 100%; border-radius: 8px;"></video>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
