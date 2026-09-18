@@ -1,0 +1,82 @@
+# Google Flow Auto - 60 Sample Prompts
+# 10 Videos x 6 Scenes (~8s each -> ~48s final merged video)
+
+VIDEO 01
+Cinematic wide establishing shot of a futuristic cyberpunk city at twilight with neon reflections on wet asphalt.
+Low angle tracking shot of an electric autonomous vehicle gliding smoothly through dense neon-lit traffic.
+Medium shot of a neon ramen stall operator serving steaming broth surrounded by hologram billboards.
+Close-up of holographic smart glasses activating with glowing cyan data streams.
+High-angle aerial drone shot descending between two towering glass skyscrapers covered in vertical gardens.
+Dramatic slow-motion shot of rain droplets falling against a bright holographic neon sign reading Cyberflow.
+
+VIDEO 02
+Wide shot of mist clearing over an ancient emerald mountain range at sunrise.
+Tracking shot through a lush bamboo forest with golden morning light filtering through leaves.
+Close-up shot of crystal-clear river water splashing over smooth river stones in sunlight.
+Slow panning shot across an ancient wooden pagoda surrounded by blooming pink cherry blossoms.
+Low-angle shot looking up at towering redwoods swaying gently in the mountain breeze.
+Sunset panoramic time-lapse from the highest mountain peak showing a glowing crimson horizon.
+
+VIDEO 03
+Extreme wide shot of an astronaut standing on the edge of a deep crater on Mars.
+Medium tracking shot of a robotic rover drilling into Martian rock and collecting mineral samples.
+First-person helmet view looking toward the Earth rising as a bright blue crescent above the red horizon.
+Wide shot of an illuminated dome bio-dome habitat glowing under the starry Martian sky.
+Interior shot of hydroponic agricultural bays filled with glowing green plants and misting nozzles.
+Cinematic shot of a spacecraft launch thruster firing brilliant white plasma as it lifts off toward orbit.
+
+VIDEO 04
+Underwater shot of vibrant coral reef bustling with schools of colorful tropical clownfish.
+Slow tracking shot alongside a majestic sea turtle gliding effortlessly through clear turquoise water.
+Close-up shot of delicate bioluminescent jellyfish pulsating with soft blue and violet light in deep water.
+Wide angle shot of sunbeams piercing through the crystal-clear ocean surface down to the sandy bottom.
+Camera tracking a gentle manta ray soaring like a bird over deep underwater trenches.
+Dramatic shot of a colossal blue whale breaching through the calm ocean surface at sunset.
+
+VIDEO 05
+Slow tracking shot inside a dimly lit cozy library with floor-to-ceiling wooden bookshelves and ladders.
+Close-up of antique brass compass and vintage navigational maps spread across a weathered oak desk.
+Macro shot of an antique fountain pen gliding across parchment leaving shimmering golden ink.
+Warm fireplace glowing in the corner of a study with gentle flickering embers and soft shadows.
+Slow dolly shot past rows of leather-bound illuminated manuscripts glowing with ancient gold leaf.
+Overhead shot of an ancient telescope pointed through an open glass observatory dome at the cosmos.
+
+VIDEO 06
+High-speed tracking shot following a sleek red sports car carving along a coastal cliffside highway.
+Low-angle wheel camera capturing tires gripping asphalt around a sharp mountainous hairpin curve.
+Drone shot chasing the sports car as it races toward a radiant ocean horizon at golden hour.
+Interior cockpit perspective looking past steering wheel and digital dials through a winding tunnel.
+Cinematic slow-motion shot of the sports car exiting the tunnel into brilliant coastal sunlight.
+Aerial pull-back shot showing the solitary vehicle driving into the sunset along the Pacific coast.
+
+VIDEO 07
+Wide aerial shot of a tranquil Nordic fjord reflecting snow-covered peaks like a mirror.
+Ground tracking shot walking along a snow-blanketed forest path surrounded by frosted pine trees.
+Cozy wooden cabin with smoke billowing from stone chimney under a dancing green Northern Lights aurora.
+Time-lapse of the vibrant green and purple Aurora Borealis rippling across the Arctic night sky.
+Close-up shot of fresh crystal snowflakes landing on a rustic wooden balcony rail.
+Wide cinematic sunrise illuminating the snowcaps with warm alpine pink and gold hues.
+
+VIDEO 08
+Macro shot of melted dark chocolate cascading smoothly over artisan strawberries and sea salt.
+Slow motion shot of fresh roasted coffee beans falling into a copper grinding hopper.
+Close-up tracking shot of barista pouring micro-foamed milk creating intricate latte art in a ceramic cup.
+Cinematic medium shot of sourdough bread rising and turning golden-brown inside a hearth oven.
+High-speed camera capturing ripe berries dropping into a glass bowl of fresh clotted cream.
+Overhead aesthetic shot of a beautifully styled dessert table with soft natural window lighting.
+
+VIDEO 09
+Dolly shot through a high-tech cleanroom laboratory with robotic arms assembling microscopic circuits.
+Close-up shot of a quantum processor chip glowing with pulsing laser cooling paths.
+Macro shot of an intricate mechanical watch movement with spinning tourbillon and interlocking gears.
+Overhead shot of automated precision laser etching complex micro-patterns onto sapphire crystal.
+Tracking shot inside a glowing fiber-optic server tunnel with pulses of light traveling through conduits.
+Sleek holographic user interface rotating and responding to touchless gesture controls.
+
+VIDEO 10
+Aerial sunrise shot revealing a vast golden desert with wind-carved sand dunes stretching to infinity.
+Close-up tracking shot of desert wind creating ripples across fine golden sand grains in morning light.
+Silhouette of a lone camel caravan walking across the ridge of a towering sand dune against the sunrise.
+Wide shot of an ancient desert oasis with deep blue water reflecting towering date palms.
+Dusk settling over the dunes as the desert cools and millions of brilliant stars emerge overhead.
+Spectacular night time-lapse of the Milky Way arching majestically over desert monoliths.
